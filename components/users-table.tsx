@@ -1,84 +1,88 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+"use client"
+import { useState } from "react"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MoreHorizontal, Mail, Phone } from "lucide-react"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
 import { planes } from "@/src"
 
+export function PlanesTable() {
+  const [search, setSearch] = useState("")
 
+  const filteredPlanes = planes.filter((plan) => {
+    return (
+      plan.grado.toLowerCase().includes(search.toLowerCase()) ||
+      plan.año.toString().includes(search) ||
+      plan.áreas.some((area) =>
+        area.nombre.toLowerCase().includes(search.toLowerCase())
+      )
+    )
+  })
 
-
-export function UsersTable() {
   return (
-    <div className="rounded-md border ">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-black">Grado</TableHead>
-            <TableHead className="text-black">Año </TableHead>
-            <TableHead className="text-black">Área  </TableHead>
-            <TableHead className="text-black">Tema  </TableHead>
-            <TableHead className="text-black">Conceptuales  </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {planes.map((user) => (
-            <TableRow key={user.grado}>
-              <TableCell className="font-medium">
-                <div className="flex items-center space-x-3">
-                  {user.grado}
-                  <div>
-                    <div className="font-medium">{}</div>
-                    <div className="text-sm text-muted-foreground">{}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>{}</TableCell>
-              <TableCell>{}</TableCell>
-              <TableCell>
-                <div className="flex flex-col space-y-1">
-                  <div className="flex items-center space-x-1 text-sm">
-                    <Mail className="h-3 w-3" />
-                    <span className="text-muted-foreground">{}</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-sm">
-                    <Phone className="h-3 w-3" />
-                    <span className="text-muted-foreground">{}</span>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
-              
-              </TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Abrir menú</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                    <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-                    <DropdownMenuItem>Editar usuario</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-600">Eliminar usuario</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+    <div className="space-y-4">
+      <Input
+        type="text"
+        placeholder="Buscar por grado, año o área..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="max-w-md"
+      />
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-black">Grado</TableHead>
+              <TableHead className="text-black">Año</TableHead>
+              <TableHead className="text-black">Área</TableHead>
+              <TableHead className="text-black">Objetivos</TableHead>
+              <TableHead className="text-black">Contenidos</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredPlanes.map((plan) =>
+              plan.áreas.map((area) => (
+                <TableRow key={`${plan.grado}-${plan.año}-${area.nombre}`}>
+                  <TableCell>{plan.grado}</TableCell>
+                  <TableCell>{plan.año}</TableCell>
+                  <TableCell>{area.nombre}</TableCell>
+                  <TableCell>
+                    <ul className="list-disc pl-4 space-y-1">
+                      {area.objetivos.map((obj, i) => (
+                        <li key={i} className="text-sm text-muted-foreground">
+                          {obj}
+                        </li>
+                      ))}
+                    </ul>
+                  </TableCell>
+                  <TableCell>
+                    <ul className="space-y-2">
+                      {area.contenidos.map((contenido, i) => (
+                        <li key={i}>
+                          <strong className="text-sm">{contenido.tema}</strong>
+                          <ul className="list-disc pl-4 text-sm text-muted-foreground">
+                            {contenido.indicadores?.map((ind, j) => (
+                              <li key={j}>{ind}</li>
+                            ))}
+                            {contenido.actividades?.map((act, k) => (
+                              <li key={k} className="italic">{act}</li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }
