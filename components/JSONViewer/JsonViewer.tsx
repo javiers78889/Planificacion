@@ -1,8 +1,9 @@
 "use client"
 
 import { planes } from "@/src"
-import ReactJson from "react-json-view"
 import { Button } from "../ui/button"
+import 'react-json-pretty/dist/monikai';
+import JSONPretty from "react-json-pretty"
 
 
 function JSONViewer() {
@@ -19,22 +20,16 @@ function JSONViewer() {
         URL.revokeObjectURL(url) // liberar memoria
     }
     return (
-        <div className="p-4 bg-gray-100 rounded-md overflow-auto ">
+        <div className="p-4 bg-gray-100 rounded-md overflow-auto flex flex-col  gap-2  ">
             <Button
                 onClick={handleDownload}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800 cursor-pointer transition"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800 cursor-pointer transition w-35"
             >
                 Descargar JSON
             </Button>
-            <ReactJson
-                src={planes}
-                name={false}
-                theme="rjv-default" // Puedes probar otros como 'monokai', 'solarized'
-                collapsed={false}  // Cambia a true si quieres que los nodos estén colapsados por defecto
-                enableClipboard={true}
-                displayDataTypes={true}
-                displayObjectSize={false}
-            />
+            <div className="p-4 bg-black rounded-md text-sm text-white overflow-auto">
+                <JSONPretty data={planes}  ></JSONPretty>
+            </div>
         </div>
     )
 }
