@@ -1,4 +1,5 @@
 "use client"
+
 import { useState } from "react"
 import {
   Table,
@@ -53,7 +54,7 @@ export function PlanesTable() {
                   <TableCell>{area.nombre}</TableCell>
                   <TableCell>
                     <ul className="list-disc pl-4 space-y-1">
-                      {area.objetivos.map((obj, i) => (
+                      {area.objetivos?.map((obj, i) => (
                         <li key={i} className="text-sm text-muted-foreground">
                           {obj}
                         </li>
@@ -61,18 +62,30 @@ export function PlanesTable() {
                     </ul>
                   </TableCell>
                   <TableCell>
-                    <ul className="space-y-2">
+                    <ul className="space-y-4">
                       {area.contenidos.map((contenido, i) => (
                         <li key={i}>
-                          <strong className="text-sm">{contenido.tema}</strong>
-                          <ul className="list-disc pl-4 text-sm text-muted-foreground">
-                            {contenido.indicadores?.map((ind, j) => (
-                              <li key={j}>{ind}</li>
-                            ))}
-                            {contenido.actividades?.map((act, k) => (
-                              <li key={k} className="italic">{act}</li>
-                            ))}
-                          </ul>
+                          <strong className="text-sm block mb-1">{contenido.tema}</strong>
+                          {contenido.indicadores && (
+                            <div className="mb-1">
+                              <span className="font-semibold text-xs">Indicadores:</span>
+                              <ul className="list-disc pl-4 text-sm text-muted-foreground">
+                                {contenido.indicadores.map((ind, j) => (
+                                  <li key={j}>{ind}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {contenido.actividades && (
+                            <div>
+                              <span className="font-semibold text-xs">Actividades:</span>
+                              <ul className="list-disc pl-4 text-sm italic text-muted-foreground">
+                                {contenido.actividades.map((act, k) => (
+                                  <li key={k}>{act}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </li>
                       ))}
                     </ul>
